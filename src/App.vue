@@ -4,7 +4,7 @@
     <LoadingSpinner v-if="isLoading" />
 
     <!-- Conditionally render the Navbar only if the route is not /login, /register, or the 404 route -->
-    <Navbar v-if="$route.path !== '/login' && $route.path !== '/register' && $route.name !== 'PageNotFound'" />
+    <Navbar v-if="$route.path !== '/login' && $route.path !== '/register' && $route.name !== 'PageNotFound' && $route.name !== 'thank-you' " />
     
     <!-- Render the appropriate page for the current route -->
     <RouterView />

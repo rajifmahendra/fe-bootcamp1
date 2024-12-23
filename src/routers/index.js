@@ -9,6 +9,7 @@ import PageNotFound from '../pages/PageNotFound.vue'; // Assuming you have a 404
 // Import the authentication middleware
 import { authMiddleware } from '../middleware/auth';
 import Detail from '@/pages/ProductDetail/Detail.vue';
+import Thankyou from '@/components/Thankyou.vue';
 
 const routes = [
   {
@@ -39,6 +40,11 @@ const routes = [
     path: '/:pathMatch(.*)*',
     name: 'PageNotFound',
     component: PageNotFound,  // Fallback for any undefined routes
+  },
+  {
+    path: '/thank-you',
+    name: 'thank-you',
+    component: Thankyou,  // Fallback for any undefined routes
   },
 ];
 

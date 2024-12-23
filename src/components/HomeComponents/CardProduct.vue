@@ -55,7 +55,8 @@
 
 <script>
 import { formatCurrency } from '../../helpers/helpers';
-import { showBuyConfirmation } from '@/plugins/swal';
+import Swal from 'sweetalert2'; // Import SweetAlert2 for confirmation
+import { useRouter } from 'vue-router'; // Import useRouter for redirection
 
 export default {
   name: 'CardProduct',
@@ -65,17 +66,52 @@ export default {
       required: true,
     },
   },
-  methods: {
+  setup() {
+    const router = useRouter(); // Access the router instance
+
     // Handle the Buy button click
-    handleBuy(product) {
-      showBuyConfirmation(product, formatCurrency);
-    },
+    const handleBuy = (product) => {
+      // Show confirmation modal
+      Swal.fire({
+        title: 'Are you sure?',
+        text: `Do you want to buy ${product.name} for ${formatCurrency(product.price)}?`,
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, buy it!',
+        cancelButtonText: 'No, cancel',
+        reverseButtons: true
+      }).then((result) => {
+        if (result.isConfirmed) {
+          // Show success message
+          Swal.fire(
+            'Purchased!',
+            `You have successfully bought ${product.name} for ${formatCurrency(product.price)}`,
+            'success'
+          );
+
+          // Redirect to the thank you page
+          router.push({ name: 'thank-you' });
+        } else {
+          // Show cancellation message
+          Swal.fire(
+            'Cancelled',
+            'Your purchase has been cancelled',
+            'info'
+          );
+        }
+      });
+    };
+
     // Handle the details button click
-    handleDetails(product) {
+    const handleDetails = (product) => {
       alert(`You selected to view details of: ${product.name}`);
-    },
-    // Format currency function for use inside this component
-    formatCurrency,
+    };
+
+    return {
+      formatCurrency,
+      handleBuy,
+      handleDetails,
+    };
   },
 };
 </script>
