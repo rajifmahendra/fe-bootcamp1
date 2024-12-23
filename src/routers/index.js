@@ -6,29 +6,32 @@ import LoginPage from '../pages/login.vue';
 import RegisterPage from '../pages/register.vue';
 import PageNotFound from '../pages/PageNotFound.vue'; // Assuming you have a 404 page
 
+// Import the authentication middleware
+import { authMiddleware } from '../middleware/auth';
+
 const routes = [
   {
     path: '/',
     name: 'HomeIndex',
     component: HomeIndex,
-    meta: { requiresAuth: true },  // Add this if the route requires authentication
+    meta: { requiresAuth: true },  // This page requires authentication
   },
   {
     path: '/login',
     name: 'LoginPage',
     component: LoginPage,
-    meta: { guestOnly: true }, // Only accessible to guests (not logged in)
+    meta: { guestOnly: true }, // This page should only be accessible to guests
   },
   {
     path: '/register',
     name: 'RegisterPage',
     component: RegisterPage,
-    meta: { guestOnly: true }, // Only accessible to guests (not logged in)
+    meta: { guestOnly: true }, // This page should only be accessible to guests
   },
   {
     path: '/:pathMatch(.*)*',
     name: 'PageNotFound',
-    component: PageNotFound,
+    component: PageNotFound,  // Fallback for any undefined routes
   },
 ];
 
@@ -37,21 +40,7 @@ const router = createRouter({
   routes,
 });
 
-// Global navigation guard
-router.beforeEach((to, from, next) => {
-  const isAuthenticated = !!localStorage.getItem('access_token');  // Check if token exists in localStorage
-  
-  if (to.meta.guestOnly && isAuthenticated) {
-    // If the route requires guests only and the user is authenticated, redirect to home
-    return next('/');
-  }
-  
-  if (to.meta.requiresAuth && !isAuthenticated) {
-    // If the route requires authentication and the user is not authenticated, redirect to login
-    return next('/login');
-  }
-
-  next();  // Allow the navigation
-});
+// Apply the middleware using beforeEach
+router.beforeEach(authMiddleware);
 
 export default router;
