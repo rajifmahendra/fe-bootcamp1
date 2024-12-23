@@ -11,7 +11,7 @@ import { authMiddleware } from '../middleware/auth';
 
 const routes = [
   {
-    path: '/',
+    path: '/', 
     name: 'HomeIndex',
     component: HomeIndex,
     meta: { requiresAuth: true },  // This page requires authentication
