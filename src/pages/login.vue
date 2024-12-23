@@ -43,6 +43,8 @@
 import { messages } from '../message'; // Import messages from message.js
 import axios from 'axios'; // Import axios for API calls
 import { mapState } from 'vuex';
+import { isValidEmail } from '../helpers/helpers'; // Import the helper function
+
 
 export default {
   name: "LoginPage",
@@ -68,7 +70,7 @@ export default {
       this.apiError = "";
 
       // Validate Email and Password
-      if (!this.email || !this.isValidEmail(this.email)) {
+      if (!this.email || !isValidEmail(this.email)) {
         this.emailError = messages.login.emailError;
         isValid = false;
       }
@@ -108,11 +110,11 @@ export default {
         }
       }
     },
-    // Validate email format
-    isValidEmail(email) {
-      const regex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
-      return regex.test(email);
-    },
+    // // Validate email format
+    // isValidEmail(email) {
+    //   const regex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+    //   return regex.test(email);
+    // },
   },
 };
 </script>
