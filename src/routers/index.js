@@ -8,13 +8,20 @@ import PageNotFound from '../pages/PageNotFound.vue'; // Assuming you have a 404
 
 // Import the authentication middleware
 import { authMiddleware } from '../middleware/auth';
+import Detail from '@/pages/ProductDetail/Detail.vue';
 
 const routes = [
   {
-    path: '/', 
+    path: '/',
     name: 'HomeIndex',
     component: HomeIndex,
     meta: { requiresAuth: true },  // This page requires authentication
+  },
+  {
+    path: '/product-detail/:productName',
+    name: 'product-detail',
+    component: Detail,
+    props: true, // Pass route params as props to the component
   },
   {
     path: '/login',
