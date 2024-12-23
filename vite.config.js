@@ -17,7 +17,20 @@ export default defineConfig({
     },
   },
   define: {
-    'process.env.VITE_API_URL': JSON.stringify(process.env.VITE_API_URL),
-    // 'process.env.VITE_SECRET_KEY': JSON.stringify(process.env.VITE_SECRET_KEY),
-  }
+    // Expose environment variables to Vite build process
+    'process.env': {
+      VITE_API_URL: JSON.stringify(process.env.VITE_API_URL),
+      // Optional, uncomment if you want to expose secret key or other environment variables
+      // VITE_SECRET_KEY: JSON.stringify(process.env.VITE_SECRET_KEY),
+    },
+  },
+  server: {
+    proxy: {
+      '/api': {
+        target: process.env.VITE_API_URL || 'http://localhost:8000', // Default to localhost if not provided
+        changeOrigin: true,
+        secure: false,
+      },
+    },
+  },
 })
