@@ -56,7 +56,7 @@
 
 <script>
 import { ref, onMounted } from 'vue';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';  // Import useRouter
 import { showBuyConfirmation } from '@/plugins/swal'; 
 import axiosInstance from '@/axios';
 import { formatCurrency } from '@/helpers/helpers'; 
@@ -66,6 +66,7 @@ export default {
   props: ['productName'], // To get the product name from the route
   setup() {
     const route = useRoute();
+    const router = useRouter();  // Initialize the router for navigation
     const product = ref(null);
     const productName = route.params.productName;
 
@@ -81,7 +82,9 @@ export default {
 
     // Handle the Buy Now button click
     const handleBuy = (product) => {
-      showBuyConfirmation(product, formatCurrency);
+      showBuyConfirmation(product, formatCurrency).then((result) => {
+          router.push({ name: 'thank-you' });
+      });
     };
 
     // Handle the Back button click
