@@ -1,12 +1,11 @@
 <template>
-    <div class="p-4">
+    <div class="container mx-auto py-9 md:py-12 px-4 md:px-6">
         <section>
             <Banner />
         </section>
-        <section class="w-1/2 my-2 flex flex-col gap-2">
-            <h1 class="text-2xl font-extrabold">Recommended Products</h1>
+        <div class=" w-full">
             <CardProduct />
-        </section>
+        </div>
     </div>
 </template>
 <script>
