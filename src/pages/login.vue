@@ -39,6 +39,9 @@
           </button>
         </div>
       </form>
+      <button @click="checkEnv">
+        test vuex loading
+      </button>
       
       <!-- Redirect to Register Page -->
       <div class="text-center text-sm text-gray-500">
@@ -50,6 +53,8 @@
 </template>
 
 <script>
+import { mapState } from 'vuex';
+
 export default {
   name: "LoginPage",
   data() {
@@ -60,18 +65,16 @@ export default {
       passwordError: "",
     };
   },
+  computed: {
+    ...mapState(['isLoading']),  // Map Vuex state to computed property
+  },
   methods: {
     handleLogin() {
-      // Basic validation
       let isValid = true;
-
-      // Validate email
       if (!this.email || !this.isValidEmail(this.email)) {
         this.emailError = "Please enter a valid email.";
         isValid = false;
       }
-
-      // Validate password
       if (!this.password || this.password.length < 6) {
         this.passwordError = "Password must be at least 6 characters.";
         isValid = false;
@@ -79,8 +82,6 @@ export default {
 
       if (isValid) {
         console.log("Login successful", { email: this.email, password: this.password });
-
-        // Redirect to home page after successful login
         this.$router.push('/');
       }
     },
@@ -88,10 +89,13 @@ export default {
       const regex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
       return regex.test(email);
     },
+    checkEnv() {
+      this.$store.dispatch('startLoading');
+      setTimeout(() => {
+        console.log(process.env.VITE_API_URL);
+        this.$store.dispatch('stopLoading');
+      }, 2000);
+    },
   },
 };
 </script>
-
-<style scoped>
-/* Add specific styles for the login page */
-</style>
