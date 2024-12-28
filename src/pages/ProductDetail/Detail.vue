@@ -81,10 +81,34 @@ export default {
     });
 
     // Handle the Buy Now button click
-    const handleBuy = (product) => {
-      showBuyConfirmation(product, formatCurrency).then((result) => {
-          router.push({ name: 'thank-you' });
-      });
+    const handleBuy = async (product) => {
+      try {
+        const cart = [
+          {
+            id_product: product.id,  // Assuming the product has an 'id' field
+            quantity: 1,
+            price: product.price,
+          },
+        ];
+
+        // Send the request to the API to process the order
+        const response = await axiosInstance.post('/api/customer-Order', { cart });
+        // Handle success (optional)
+        if (response.status === 201) {
+          const confirmation = await showBuyConfirmation(product, formatCurrency);
+          if (confirmation.status === 'success') {
+            // Navigate to the thank you page after successful purchase
+            console.log('Purchased:', product);
+            router.push({ name: 'thank-you' });
+          } else {
+            // Handle cancellation (you can show a message or take another action)
+            console.log('Purchase was canceled');
+          }
+        }
+      } catch (error) {
+        console.error('Error during the purchase process:', error);
+        // Optionally show an error message to the user
+      }
     };
 
     // Handle the Back button click

@@ -54,17 +54,15 @@ export const showBuyConfirmation = (product, formatCurrency) => {
     reverseButtons: true
   }).then((result) => {
     if (result.isConfirmed) {
-      Swal.fire(
-        'Purchased!',
-        `You have successfully bought ${product.name} for ${formatCurrency(product.price)}`,
-        'success'
-      );
+      return {
+        status: 'success',
+        message: `You have successfully bought ${product.name} for ${formatCurrency(product.price)}`
+      };
     } else {
-      Swal.fire(
-        'Cancelled',
-        'Your purchase has been cancelled',
-        'info'
-      );
+      return {
+        status: 'canceled',
+        message: 'Your purchase has been cancelled'
+      };
     }
   });
 };

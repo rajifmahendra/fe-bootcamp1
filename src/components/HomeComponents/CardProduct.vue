@@ -57,6 +57,9 @@
 import { formatCurrency } from '../../helpers/helpers';
 import Swal from 'sweetalert2'; // Import SweetAlert2 for confirmation
 import { useRouter } from 'vue-router'; // Import useRouter for redirection
+import axiosInstance from '@/axios';
+import { computed } from 'vue';
+import { useStore } from 'vuex';
 
 export default {
   name: 'CardProduct',
@@ -67,10 +70,12 @@ export default {
     },
   },
   setup() {
+    const store = useStore();
     const router = useRouter(); // Access the router instance
+    const isLoading = computed(() => store.state.isLoading); // Access isLoading state from Vuex
 
     // Handle the Buy button click
-    const handleBuy = (product) => {
+    const handleBuy = async (product) => {
       // Show confirmation modal
       Swal.fire({
         title: 'Are you sure?',
@@ -80,7 +85,7 @@ export default {
         confirmButtonText: 'Yes, buy it!',
         cancelButtonText: 'No, cancel',
         reverseButtons: true
-      }).then((result) => {
+      }).then(async (result) => {
         if (result.isConfirmed) {
           // Show success message
           Swal.fire(
@@ -89,8 +94,37 @@ export default {
             'success'
           );
 
-          // Redirect to the thank you page
-          router.push({ name: 'thank-you' });
+          // Prepare the body data to send to the API
+          const cart = [
+            {
+              id_product: product.id,
+              quantity: 1, // Hardcoded as 1 for simplicity
+              price: product.price,
+            }
+          ];
+
+          try {
+            const response = await axiosInstance.post('/api/customer-Order', { cart });
+            store.dispatch('startLoading'); // Dispatch to start loading
+            // Handle successful purchase response
+            console.log(response.status, 'awdaw')
+            if (response.status === 201) {
+              Swal.fire('Success!', 'Your order has been placed successfully!', 'success');
+              // Optionally redirect to a "Thank You" page or Order History
+              router.push({ name: 'thank-you' });
+              store.dispatch('stopLoading'); // Dispatch to start loading
+
+            } else {
+              // Handle API errors if any
+              Swal.fire('Error!', 'Something went wrong while placing your order.', 'error');
+              store.dispatch('stopLoading'); // Dispatch to stop loading
+
+            }
+          } catch (error) {
+            console.error('API Error:', error);
+            Swal.fire('Error!', 'There was an issue with the API request.', 'error');
+            store.dispatch('stopLoading'); // Dispatch to stop loading
+          }
         } else {
           // Show cancellation message
           Swal.fire(
@@ -98,6 +132,8 @@ export default {
             'Your purchase has been cancelled',
             'info'
           );
+          store.dispatch('stopLoading'); // Dispatch to stop loading
+
         }
       });
     };
@@ -111,6 +147,7 @@ export default {
       formatCurrency,
       handleBuy,
       handleDetails,
+      isLoading
     };
   },
 };
